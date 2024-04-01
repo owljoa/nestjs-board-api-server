@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "commonjs", // 컴파일되는 파일에 적용되는 모듈형식
+    "declaration": true, // 프로젝트 내 ts, js 파일들에 대해서 .d.ts 파일들 생성 - 타입정의
+    "removeComments": true, // 컴파일 시 주석제거
+    "emitDecoratorMetadata": true, // (데코레이터 사용을 위함) 데코레이터의 메타정보를 소스에 붙임 (메소드의 경우 타입, 파라미터, 리턴타입)
+    "experimentalDecorators": true, // 데코레이터 사용
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021", // 자바스크립트 컴파일 버전
+    "sourceMap": true, // 디버깅용 - .map 파일 생성됨
+    "outDir": "./dist", // 컴파일된 .js 파일 생성 위치
+    "baseUrl": "./", // 컴파일 대상 기본 경로
+    "incremental": true, // 증분 컴파일 설정 여부
+    "skipLibCheck": true, // .d.ts 파일을 타입 체크에서 제외 여부
+    "strictNullChecks": false, // 엄격한 null 체크 여부
+    "noImplicitAny": false, // any 타입 에러처리 여부
+    "strictBindCallApply": false, // bind, call, apply 사용시 엄격한 타입체크 여부
+    "forceConsistentCasingInFileNames": false, // 파일명의 대소문자를 구분하지 않아도 되는 기능 사용 여부
+    "noFallthroughCasesInSwitch": false // switch 문 break 필요한 부분 체크
+  }
+}
