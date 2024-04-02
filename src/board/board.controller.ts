@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreatePostDto } from './post/dto/createPost';
+import { GetPostDto } from './post/dto/getPosts';
 import { PostService } from './post/service/post.service';
 
 @Controller('board')
@@ -7,13 +8,14 @@ export class BoardController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  getPosts(@Query('title') title: string): string {
-    return this.postService.getPosts(title);
+  async getPosts(): Promise<GetPostDto[]> {
+    // TODO: 페이징
+    return await this.postService.getPosts();
   }
 
   @Get(':id')
-  getPost(@Param('id') postId: number): string {
-    return this.postService.getPost(postId);
+  async getPost(@Param('id') postId: number): Promise<GetPostDto> {
+    return await this.postService.getPost(postId);
   }
 
   @Post()
