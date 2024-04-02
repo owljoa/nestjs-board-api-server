@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { CreatePostDto } from './dto/createPost';
-import { PostService } from './service/post.service';
+import { CreatePostDto } from './post/dto/createPost';
+import { PostService } from './post/service/post.service';
 
-@Controller('post')
-export class PostController {
+@Controller('board')
+export class BoardController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
