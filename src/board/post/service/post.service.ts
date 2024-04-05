@@ -41,4 +41,8 @@ export class PostService {
       .where('id = :id', { id })
       .execute();
   }
+
+  async deletePost(id: number) {
+    this.postRepository.delete({ id: id });
+  }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreatePostDto } from './post/dto/createPost';
 import { GetPostDto } from './post/dto/getPosts';
 import { UpdatePostDto } from './post/dto/updatePost';
@@ -27,5 +27,10 @@ export class BoardController {
   @Patch(':id')
   updatePost(@Param('id') postId: number, @Body() dto: UpdatePostDto) {
     this.postService.updatePost(postId, dto);
+  }
+
+  @Delete(':id')
+  deletePost(@Param('id') postId: number) {
+    this.postService.deletePost(postId);
   }
 }
