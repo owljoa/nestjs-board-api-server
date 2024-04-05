@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreatePostDto } from './post/dto/createPost';
 import { GetPostDto } from './post/dto/getPosts';
+import { UpdatePostDto } from './post/dto/updatePost';
 import { PostService } from './post/service/post.service';
 
 @Controller('board')
@@ -21,5 +22,10 @@ export class BoardController {
   @Post()
   createPost(@Body() dto: CreatePostDto) {
     return this.postService.createPost(dto);
+  }
+
+  @Patch(':id')
+  updatePost(@Param('id') postId: number, @Body() dto: UpdatePostDto) {
+    this.postService.updatePost(postId, dto);
   }
 }
