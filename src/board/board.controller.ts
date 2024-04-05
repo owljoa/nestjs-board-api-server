@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { CreatePostDto } from './post/dto/createPost';
 import { GetPostDto } from './post/dto/getPosts';
 import { UpdatePostDto } from './post/dto/updatePost';
@@ -9,9 +9,13 @@ export class BoardController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  async getPosts(): Promise<GetPostDto[]> {
+  async getPosts(
+    @Query('title') title?: string,
+    @Query('content') content?: string,
+    @Query('author') author?: string,
+  ): Promise<GetPostDto[]> {
     // TODO: 페이징
-    return await this.postService.getPosts();
+    return await this.postService.getPosts(title, content, author);
   }
 
   @Get(':id')

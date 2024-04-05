@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CommonUtil } from 'src/common/util/commonUtil';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from '../dto/createPost';
 import { GetPostDto } from '../dto/getPosts';
@@ -13,10 +14,22 @@ export class PostService {
     private postRepository: Repository<Post>,
   ) {}
 
-  async getPosts(): Promise<GetPostDto[]> {
-    const foundPosts = await this.postRepository.find();
-    const dtos = foundPosts.map((post: Post): GetPostDto => GetPostDto.fromEntity(post));
-    return dtos;
+  async getPosts(title?: string, content?: string, author?: string): Promise<GetPostDto[]> {
+    const queryBuilder = this.postRepository.createQueryBuilder().select('p').from(Post, 'p');
+
+    if (!CommonUtil.isNullOrBlank(title)) {
+      queryBuilder.andWhere('p.title like :title', { title: `%${title}%` });
+    }
+
+    if (!CommonUtil.isNullOrBlank(content)) {
+      queryBuilder.andWhere('p.content like :content', { content: `%${content}%` });
+    }
+
+    if (!CommonUtil.isNullOrBlank(author)) {
+      queryBuilder.andWhere('p.author = :author', { author: author });
+    }
+
+    return queryBuilder.disableEscaping().getMany();
   }
 
   async getPost(id: number): Promise<GetPostDto> {
