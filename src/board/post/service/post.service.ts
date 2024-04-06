@@ -14,22 +14,53 @@ export class PostService {
     private postRepository: Repository<Post>,
   ) {}
 
-  async getPosts(title?: string, content?: string, author?: string): Promise<GetPostDto[]> {
-    const queryBuilder = this.postRepository.createQueryBuilder().select('p').from(Post, 'p');
+  static readonly DEFAULT_PAGE_SIZE: number = 2;
+  static readonly DEFAULT_PAGE: number = 1;
+
+  async getPosts(
+    title?: string,
+    content?: string,
+    author?: string,
+    size?: number,
+    page?: number,
+  ): Promise<GetPostDto[]> {
+    // TODO: 캐싱. 전체 검색 결과 캐싱 후 캐싱된 데이터에 페이징 적용?
+    const queryBuilder = this.postRepository.createQueryBuilder('post');
 
     if (!CommonUtil.isNullOrBlank(title)) {
-      queryBuilder.andWhere('p.title like :title', { title: `%${title}%` });
+      queryBuilder.andWhere('post.title like :title', { title: `%${title}%` });
     }
 
     if (!CommonUtil.isNullOrBlank(content)) {
-      queryBuilder.andWhere('p.content like :content', { content: `%${content}%` });
+      queryBuilder.andWhere('post.content like :content', { content: `%${content}%` });
     }
 
     if (!CommonUtil.isNullOrBlank(author)) {
-      queryBuilder.andWhere('p.author = :author', { author: author });
+      queryBuilder.andWhere('post.author = :author', { author: author });
     }
 
+    const limit = this.getLimitFromSize(size);
+    queryBuilder.limit(limit);
+
+    const offset = this.getOffsetFromPage(limit, page);
+    queryBuilder.offset(offset);
+
     return queryBuilder.disableEscaping().getMany();
+  }
+
+  private getLimitFromSize(size?: number): number {
+    if (size == undefined || size <= 0) {
+      return PostService.DEFAULT_PAGE_SIZE;
+    }
+    return size;
+  }
+
+  private getOffsetFromPage(limit: number, page?: number): number {
+    let correctedPage = page;
+    if (page == undefined || page <= 0) {
+      correctedPage = PostService.DEFAULT_PAGE;
+    }
+    return limit * (correctedPage - 1);
   }
 
   async getPost(id: number): Promise<GetPostDto> {

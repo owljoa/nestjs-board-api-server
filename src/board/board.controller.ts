@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  DefaultValuePipe,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CreatePostDto } from './post/dto/createPost';
 import { GetPostDto } from './post/dto/getPosts';
 import { UpdatePostDto } from './post/dto/updatePost';
@@ -13,9 +23,10 @@ export class BoardController {
     @Query('title') title?: string,
     @Query('content') content?: string,
     @Query('author') author?: string,
+    @Query('size', new DefaultValuePipe(PostService.DEFAULT_PAGE_SIZE)) size?: number,
+    @Query('page', new DefaultValuePipe(PostService.DEFAULT_PAGE)) page?: number,
   ): Promise<GetPostDto[]> {
-    // TODO: 페이징
-    return await this.postService.getPosts(title, content, author);
+    return await this.postService.getPosts(title, content, author, size, page);
   }
 
   @Get(':id')
