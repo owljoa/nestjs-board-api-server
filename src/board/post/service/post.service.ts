@@ -39,28 +39,14 @@ export class PostService {
       queryBuilder.andWhere('post.author = :author', { author: author });
     }
 
-    const limit = this.getLimitFromSize(size);
+    const limit = CommonUtil.getLimitFromSize(PostService.DEFAULT_PAGE_SIZE, size);
     queryBuilder.limit(limit);
 
-    const offset = this.getOffsetFromPage(limit, page);
+    const offset = CommonUtil.getOffsetFromPage(PostService.DEFAULT_PAGE, limit, page);
     queryBuilder.offset(offset);
 
-    return queryBuilder.disableEscaping().getMany();
-  }
-
-  private getLimitFromSize(size?: number): number {
-    if (size == undefined || size <= 0) {
-      return PostService.DEFAULT_PAGE_SIZE;
-    }
-    return size;
-  }
-
-  private getOffsetFromPage(limit: number, page?: number): number {
-    let correctedPage = page;
-    if (page == undefined || page <= 0) {
-      correctedPage = PostService.DEFAULT_PAGE;
-    }
-    return limit * (correctedPage - 1);
+    const posts = await queryBuilder.disableEscaping().getMany();
+    return posts.map((post): GetPostDto => GetPostDto.fromEntity(post));
   }
 
   async getPost(id: number): Promise<GetPostDto> {
